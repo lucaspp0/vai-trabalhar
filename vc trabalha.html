@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Você trabalha? </title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <style>
+        html,
+        body,
+        .datepicker-date-display {
+            background-color: rgb(30, 30, 30);
+            color: rgb(255, 255, 255);
+        }
+        
+        .datepicker-day-button,
+        .datepicker {
+            color: rgb(250, 50, 150);
+        }
+        
+        .card-panel {
+            border-radius: 10px;
+        }
+        
+        a {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col s12 center">
+                <h1> Você trabalha? </h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s8 offset-s2 m4 offset-m4">
+                <h4> fala a data ai meu caro </h4>
+                <input type="text" onchange="mudarCarai()" class="datepicker" id="datepicker">
+            </div>
+        </div>
+
+        <div class="row" id="ChuparDados">
+            <div class="col s12 m4">
+                <div class="card-panel teal">
+                    <span class="white-text"> Desgraça </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.datepicker');
+            var instances = M.Datepicker.init(elems, {
+                format: 'dd/mm/yyyy',
+                defaultDate: new Date()
+            });
+        });
+        let today = new Date()
+        let ano = today.getFullYear()
+        let mes = today.getMonth() + 1
+        let dia = today.getDate()
+        fetch(`https://api.calendario.com.br/?json=true&ano=${ano}&estado=ESPIRITO_SANTO&token=bHVjYXNwcDFAdWNsLmJyJmhhc2g9Njc1MTYxMQ`)
+            .then(result => result.json())
+            .then(json => {
+                const div = document.getElementById("ChuparDados")
+                div.innerHTML = ""
+                let data = new Date(`${ano}-${mes}-${dia}`)
+                data.setDate(data.getDate() + 1);
+                let strData = `${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()}`
+                let lista = json.filter(x => x.date == strData)
+                let mensagem = ""
+                if (lista.length > 0) {
+                    mensagem = `<div class="col s12 m4 offset-m4">
+                                        <div class="card teal darken-1">
+
+                                            <div class="card-content white-text"> 
+                                                <span class="card-title">${strData}</span>
+                                                <p>Tem trabalho pra vc não meu bem</p>
+                                                <p> <a target="_blank" href="${lista[0].link}" > ${lista[0].name} </a> </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `
+                } else {
+                    mensagem = `<div class="col s12 m4 offset-m4">
+                                        <div class="card teal darken-1">
+
+                                            <div class="card-content white-text"> 
+                                                <span class="card-title">${strData}</span>
+                                                <p>Tem trabalhar pra vc gayzinho</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `
+                }
+                div.innerHTML += mensagem
+            }).catch(err => console.log(err))
+
+        function mudarCarai() {
+            const textData = document.getElementById("datepicker")
+            var strData = moment(textData.value, "DD/MM/YYYY");
+
+            let data = new Date(strData.format("YYYY-MM-DD"))
+            data.setDate(data.getDate() + 1);
+            let ano = data.getFullYear()
+            const div = document.getElementById("ChuparDados")
+            div.innerHTML = ""
+            fetch(`https://api.calendario.com.br/?json=true&ano=${ano}&estado=ESPIRITO_SANTO&token=bHVjYXNwcDFAdWNsLmJyJmhhc2g9Njc1MTYxMQ`)
+                .then(result => result.json())
+                .then(json => {
+                    console.log({
+                        array: json,
+                        str: strData.format("DD/MM/YYYY")
+                    })
+                    let lista = json.filter(x => x.date == strData.format("DD/MM/YYYY"))
+                    if (lista.length > 0) {
+                        div.innerHTML += `<div class="col s12">
+                                        <div class="card teal darken-1">
+
+                                            <div class="card-content white-text"> 
+                                                <span class="card-title">${strData.format("DD/MM/YYYY")}</span>
+                                                <p>Tem trabalho pra vc não meu bem</p>
+                                                <p> <a target="_blank" href="${lista[0].link}" > ${lista[0].name} </a> </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `
+                    } else {
+                        div.innerHTML += `<div class="col s12">
+                                        <div class="card teal darken-1">
+
+                                            <div class="card-content white-text"> 
+                                                <span class="card-title">${strData.format("DD/MM/YYYY")}</span>
+                                                <p>Tem trablaho pra vc seu merda</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `
+                    }
+                });
+        }
+    </script>
+
+</body>
+
+</html>
