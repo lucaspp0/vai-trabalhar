@@ -1,0 +1,3 @@
+localhost/SGF_ELDORADO/Modulos/Planejamento/CfgRegimeFuturoFrm.aspx?TipPlano=P
+
+\SGF\SGF\Modulos\Planejamento\CfgRegimeFuturoFrm.aspx.cs
